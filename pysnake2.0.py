@@ -49,7 +49,12 @@ class App(threading.Thread):
         # Main tkinter loop
         self.root.mainloop()
         
-    
+        
+    # Resets the varibles, wipes Snake[]
+    def reset(self):
+        pass
+        
+        
     # Draws a snake part to the canvas. Part must be a snakePart class object
     def drawSnakePart(self, part):
         global cellSize
@@ -106,6 +111,7 @@ def runGame():
 
 
 # Sets snake direction on keypress
+# This should really be a part of the app class but it will break the threading 
 def key(event):
     global snakeDirection
     keyPressed = str(event.char)
