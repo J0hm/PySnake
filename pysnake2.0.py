@@ -48,7 +48,7 @@ class App(threading.Thread):
         
         # Main tkinter loop
         self.root.mainloop()
-    
+        
     
     # Draws a snake part to the canvas. Part must be a snakePart class object
     def drawSnakePart(self, part):
@@ -78,7 +78,26 @@ class App(threading.Thread):
         else: 
             print("nomove")
           
-            
+    
+# Class for each body part object
+class snakePart():
+    def __init__(self):
+        # x and y are the cell coords, not the pixel coords
+        self.x = 0
+        self.y = 0
+        self.oldx = 0
+        self.oldy = 0
+        self.id = int
+        self.fillColor = "green" # Default for body - head would be changed to black
+    
+    
+# Class for each food object
+class food():
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+    
+    
 # Main tick loop 
 def runGame():
     running = True
