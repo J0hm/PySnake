@@ -1,12 +1,35 @@
 from tkinter import *
 import random as rand
-
+import time
+import threading
 
 canvasSize = 500
 cellSize = 20
 cellCount = canvasSize/cellSize
 Snake = [] 
 snakeDirection = int
+tps = 10
+running = False
+
+
+class App(threading.Thread):
+
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.start()
+
+    def callback(self):
+        self.root.quit()
+
+    def run(self):
+        self.root = Tk()
+        self.root.protocol("WM_DELETE_WINDOW", self.callback)
+        self.root.bind("<Key>", key)
+        
+
+        self.root.mainloop()
+
+
 
 # Window frame
 class Window(Frame):
@@ -92,12 +115,44 @@ def key(event):
         snakeDirection = 2
     elif keyPressed == 'a':
         snakeDirection = 3
-    else:
+    elif keyPressed == 'd':
         snakeDirection = 4
+    else:
+        return # Marginally improved efficiency 
     
-    
+    # Temp, used for debug
     print(snakeDirection)
         
+
+def tick():
+    global cellSize
+    global cellCount
+    global Snake
+    global snakeDirection
+    global tps
+    global running 
+
+    running = True
+    # Determines how long to wait for each tick
+    tickLength = 1000/tps
+
+
+
+     # Moves head 
+    if snakeDirection == 1:
+         g.move(Snake[0], 0, 20)
+    elif snakeDirection == 2:
+         g.move(Snake[0], 0, -20)
+    elif snakeDirection == 3:
+         g.move(Snake[0], -20, 0)
+    elif snakeDirection == 4:
+        g.move(Snake[0], 20, 0)
+    else: 
+        print("nomove")
+
+        root.after(tickLength, tick())
+
+
 
 
 # Starts the window and sets properties 
@@ -112,6 +167,8 @@ g = Canvas(root, width=canvasSize, height=canvasSize)
 g.pack()
 
 startGame()
+
+root.after(1000/tps, tick())
 
 # Window mainloop 
 root.mainloop()
