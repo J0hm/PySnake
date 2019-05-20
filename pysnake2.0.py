@@ -5,13 +5,13 @@ import threading
 from tkinter import messagebox
 
 # Constants
-canvasSize = 500
-cellSize = 20
+canvasSize = 900
+cellSize = 30
 cellCount = canvasSize/cellSize
 Snake = [] 
 FoodObjectList = [] # Only using one food object so this isnt necessary, but it allows for more if you want
 snakeDirection = int
-tps = 10
+tps = 20
 running = False
 score = 0
 highScore = 0
@@ -139,10 +139,8 @@ class App(threading.Thread):
         global FoodObjectList
         global Snake
 
-        
-
         # Python does not have a do-while loop, so I made one 
-        # This is supposed to ensure that no food spawns inside the snake
+        # This is supposed to ensure that no food spawns inside the snake: it must take an open spot
         while True:
             badSpawn = False
             self.g.delete(FoodObjectList[0].id)
@@ -159,6 +157,7 @@ class App(threading.Thread):
     # On key press...
     def key(self, event):
         global snakeDirection
+        global tps
         keyPressed = str(event.char)
     
         # Sets snake direction. And statements are a failsafe to make it so you cant turn 180 degrees back into yourself
