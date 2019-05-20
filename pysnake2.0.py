@@ -6,7 +6,7 @@ from tkinter import messagebox
 
 # Constants
 canvasSize = 500
-cellSize = 50
+cellSize = 20
 cellCount = canvasSize/cellSize
 Snake = [] 
 FoodObjectList = [] # Only using one food object so this isnt necessary, but it allows for more if you want
@@ -156,9 +156,6 @@ class App(threading.Thread):
                 break
 
 
-
-
-
     # On key press...
     def key(self, event):
         global snakeDirection
@@ -238,7 +235,7 @@ class App(threading.Thread):
                 deltaX = Snake[len(Snake)-i].x - Snake[len(Snake)-i].oldx
                 deltaY = Snake[len(Snake)-i].y - Snake[len(Snake)-i].oldy
                 self.g.move(Snake[len(Snake)-i].id, deltaX*cellSize, deltaY*cellSize)
-                print("Updated")
+                #print("Updated") # Also here for debugging
 
             
             if Snake[0].x == FoodObjectList[0].x and Snake[0].y == FoodObjectList[0].y: # When food is hit...
@@ -247,11 +244,12 @@ class App(threading.Thread):
                 newSnakePart.x = Snake[(len(Snake)-1)].oldx
                 newSnakePart.y = Snake[(len(Snake)-1)].oldy
                 self.drawSnakePart(newSnakePart)
-
                 Snake.append(newSnakePart)
 
+                # Creates new food object
                 self.spawnNewFood()
 
+                # Increaces score
                 score+= 1
                 self.scoreLabel.config(text="Score: " + str(score))
 
