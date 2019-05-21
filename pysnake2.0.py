@@ -163,12 +163,16 @@ class App(threading.Thread):
         # Sets snake direction. And statements are a failsafe to make it so you cant turn 180 degrees back into yourself
         if keyPressed == 'w' and snakeDirection != 2:
             snakeDirection = 1
+            time.sleep(1/tps)
         elif keyPressed == 's' and snakeDirection != 1:
             snakeDirection = 2
+            time.sleep(1/tps)
         elif keyPressed == 'a' and snakeDirection != 4:
             snakeDirection = 3
+            time.sleep(1/tps)
         elif keyPressed == 'd' and snakeDirection != 3:
             snakeDirection = 4
+            time.sleep(1/tps)
         else:
             return # Marginally improved efficiency 
 
