@@ -9,11 +9,14 @@ canvasSize = 900
 cellSize = 30
 cellCount = canvasSize/cellSize
 Snake = [] 
+Snake2 = []
 FoodObjectList = [] # Only using one food object so this isnt necessary, but it allows for more if you want
 snakeDirection = int
+snakeDirection2 = int
 tps = 20
 running = False
-score = 0
+U1Score = 0
+U2Score = 0
 highScore = 0
 padding = 50 # Amount of pixels for the padding under the canvas
 
@@ -52,7 +55,7 @@ class App(threading.Thread):
             self.g.create_line(i*cellSize, 0, i*cellSize, canvasSize)
 
         # Creates score label and other information on the bottom
-        self.scoreLabel = Label(self.root, text="Score: " + str(score), font=("Helvetica", 16), fg="white", bg="black")
+        self.scoreLabel = Label(self.root, text="Score: " + str(U1Score), font=("Helvetica", 16), fg="white", bg="black")
         self.scoreLabel.place(x=0, y=canvasSize+10)
         self.highScoreLabel = Label(self.root, text="High Score: " + str(highScore), font=("Helvetica", 16), fg="white", bg="black")
         self.highScoreLabel.place(x=100, y=canvasSize+10)
@@ -60,18 +63,27 @@ class App(threading.Thread):
         snakeHead = snakePart() # Creates head object
         Snake.append(snakeHead) # Adds head object to list of snake parts
 
+        snake2Head = snakePart()
+        Snake2.append(snake2Head)
+
         # Sets snake head properties 
         Snake[0].fillColor = "black"
+        Snake2[0].fillColor = "black"
 
         # Draws off center if there is no exact center
         if (cellCount % 2) == 0:
             Snake[0].x = cellCount/2
             Snake[0].y = cellCount/2
+            Snake2[0].x = Snake[0].x - 5
+            Snake2[0].y = Snake[0].y - 5
         else:
             Snake[0].x = (cellCount-1)/2
             Snake[0].y = (cellCount-1)/2
+            Snake2[0].x = Snake[0].x - 5
+            Snake2[0].y = Snake[0].y - 5
 
         self.drawSnakePart(Snake[0]) # Draws head
+        self.drawSnakePart(Snake2[0])
 
         FoodObjectList.append(food())
 
@@ -157,9 +169,10 @@ class App(threading.Thread):
     # On key press...
     def key(self, event):
         global snakeDirection
+        global snakeDirection2
         global tps
         keyPressed = str(event.char)
-    
+
         # Sets snake direction. And statements are a failsafe to make it so you cant turn 180 degrees back into yourself
         if keyPressed == 'w' and snakeDirection != 2:
             snakeDirection = 1
@@ -173,8 +186,20 @@ class App(threading.Thread):
         elif keyPressed == 'd' and snakeDirection != 3:
             snakeDirection = 4
             time.sleep(1/tps)
+        elif keyPressed == "i" and snakeDirection2 != 2:
+            snakeDirection2 = 1
+        elif keyPressed == 'k' and snakeDirection2 != 1:
+            snakeDirection2 = 2
+            time.sleep(1/tps)
+        elif keyPressed == 'j' and snakeDirection2 != 4:
+            snakeDirection2 = 3
+            time.sleep(1/tps)
+        elif keyPressed == 'l' and snakeDirection2 != 3:
+            snakeDirection2 = 4
+            time.sleep(1/tps)
         else:
             return # Marginally improved efficiency 
+
 
 
     # Main tick function, called each tick 
@@ -207,10 +232,32 @@ class App(threading.Thread):
             Snake[0].oldy = Snake[0].y
             Snake[0].x = Snake[0].x + 1
 
+        # Moves the snake head
+        if snakeDirection2 == 1:
+            self.g.move(Snake2[0].id, 0, -cellSize)
+            Snake2[0].oldx = Snake2[0].x
+            Snake2[0].oldy = Snake2[0].y
+            Snake2[0].y = Snake2[0].y - 1
+        elif snakeDirection2 == 2:
+            self.g.move(Snake2[0].id, 0, cellSize)
+            Snake2[0].oldx = Snake2[0].x
+            Snake2[0].oldy = Snake2[0].y
+            Snake2[0].y = Snake2[0].y + 1
+        elif snakeDirection2 == 3:
+            self.g.move(Snake2[0].id, -cellSize, 0)
+            Snake2[0].oldx = Snake2[0].x
+            Snake2[0].oldy = Snake2[0].y
+            Snake2[0].x = Snake2[0].x - 1
+        elif snakeDirection2 == 4:
+            self.g.move(Snake2[0].id, cellSize, 0)
+            Snake2[0].oldx = Snake2[0].x
+            Snake2[0].oldy = Snake2[0].y
+            Snake2[0].x = Snake2[0].x + 1
+
         if len(Snake) > 0: # Fixes an error where the first iteration does not have any objects. No idea why it is happening as the same oject is beig modified earlier, but it works so im not going to try to fix it
             #print(Snake[0].x, ",", Snake[0].y) # For debugging 
 
-            if Snake[0].x == 0 or Snake[0].x == cellCount+1 or Snake[0].y == 0 or Snake[0].y == cellCount+1: # When a wall is hit...
+            if Snake[0].x == 0 or Snake[0].x == cellCount+1 or Snake[0].y == 0 or Snake[0].y == cellCount+1 or Snake2[0].x == 0 or Snake2[0].y == 0 or Snake2[0].x == cellCount+1 or Snake2[0].y == cellCount+1: # When a wall is hit...
                 running = False
                 return
 
@@ -253,8 +300,10 @@ class App(threading.Thread):
                 self.spawnNewFood()
 
                 # Increaces score
-                score+= 1
-                self.scoreLabel.config(text="Score: " + str(score))
+                #self.scoreLabel.config(text="Score: " + str(score))
+
+
+            
 
         time.sleep(1/tps) # Sleeps for 1 tick
           
@@ -290,13 +339,13 @@ def runGame():
     while running == True:
         app.tick()
     
-    scoreMessage = "You have lost. Score: " + str(score)
+    scoreMessage = "You have lost. Score: "
 
     messagebox.showinfo("Game Over", scoreMessage)
 
-    if score > highScore:
-        highScore = score
-        app.highScoreLabel.config(text="High Score: " + str(highScore))
+    #if score > highScore:
+       # highScore = score
+        #app.highScoreLabel.config(text="High Score: " + str(highScore))
 
     # Resets the game
     app.reset()
