@@ -9,10 +9,10 @@ canvasSize = 900
 cellSize = 30
 cellCount = canvasSize/cellSize
 Snake = [] 
-Snake2 = []
+secondSnake = []
 FoodObjectList = [] # Only using one food object so this isnt necessary, but it allows for more if you want
 snakeDirection = int
-snakeDirection2 = int
+secondSnakeDirection = int
 tps = 20
 running = False
 U1Score = 0
@@ -54,36 +54,35 @@ class App(threading.Thread):
             # Vertical lines
             self.g.create_line(i*cellSize, 0, i*cellSize, canvasSize)
 
-        # Creates score label and other information on the bottom
-        self.scoreLabel = Label(self.root, text="Score: " + str(U1Score), font=("Helvetica", 16), fg="white", bg="black")
+        self.scoreLabel = Label(self.root, text="Score: " + str(U1Score) +" vs " + str(U2Score) + "          Total: " + str(U1Score+U2Score), font=("Helvetica", 16), fg="white", bg="black")
         self.scoreLabel.place(x=0, y=canvasSize+10)
         self.highScoreLabel = Label(self.root, text="High Score: " + str(highScore), font=("Helvetica", 16), fg="white", bg="black")
-        self.highScoreLabel.place(x=100, y=canvasSize+10)
+        self.highScoreLabel.place(x=300, y=canvasSize+10)
 
         snakeHead = snakePart() # Creates head object
         Snake.append(snakeHead) # Adds head object to list of snake parts
 
-        snake2Head = snakePart()
-        Snake2.append(snake2Head)
+        secondSnakeHead = snakePart()
+        secondSnake.append(secondSnakeHead)
 
         # Sets snake head properties 
         Snake[0].fillColor = "black"
-        Snake2[0].fillColor = "black"
+        secondSnake[0].fillColor = "black"
 
         # Draws off center if there is no exact center
         if (cellCount % 2) == 0:
             Snake[0].x = cellCount/2
             Snake[0].y = cellCount/2
-            Snake2[0].x = Snake[0].x - 5
-            Snake2[0].y = Snake[0].y - 5
+            secondSnake[0].x = Snake[0].x - 5
+            secondSnake[0].y = Snake[0].y - 5
         else:
             Snake[0].x = (cellCount-1)/2
             Snake[0].y = (cellCount-1)/2
-            Snake2[0].x = Snake[0].x - 5
-            Snake2[0].y = Snake[0].y - 5
+            secondSnake[0].x = Snake[0].x - 5
+            secondSnake[0].y = Snake[0].y - 5
 
         self.drawSnakePart(Snake[0]) # Draws head
-        self.drawSnakePart(Snake2[0])
+        self.drawSnakePart(secondSnake[0])
 
         FoodObjectList.append(food())
 
@@ -94,9 +93,9 @@ class App(threading.Thread):
     # Resets the varibles, wipes Snake[]
     def reset(self):
         global Snake
+        global secondSnake
         global snakeDirection
-        global snakeDirection2
-        global Snake2
+        global secondSnakeDirection
         global U1Score
         global U2Score
         global FoodObjectList
@@ -104,43 +103,43 @@ class App(threading.Thread):
         for i in Snake:
             self.g.delete(i.id)
 
-        for i in Snake2:
+        for i in secondSnake:
             self.g.delete(i.id)
 
-        Snake2.clear()
+        secondSnake.clear()
         Snake.clear()
 
         snakeDirection = int
-        snakeDirection2 = int
+        secondSnakeDirection = int
        
         U1Score = 0
         U2Score = 0
-        self.scoreLabel.config(text="Score: " + str(U1Score) + " vs. " + str(U2Score))
+        self.scoreLabel.config(text="Score: " + str(U1Score) +" vs " + str(U2Score) + "          Total: " + str(U1Score+U2Score))
         
         snakeHead = snakePart() # Creates head object
         Snake.append(snakeHead) # Adds head object to list of snake parts
 
         snakeHead2 = snakePart()
-        Snake2.append(snakeHead)
+        secondSnake.append(snakeHead2)
 
         # Sets snake head properties 
         Snake[0].fillColor = "black"
-        Snake2[0].fillColor = "black"
+        secondSnake[0].fillColor = "black"
 
         # Draws off center if there is no exact center
         if (cellCount % 2) == 0:
             Snake[0].x = cellCount/2
             Snake[0].y = cellCount/2
-            Snake2[0].x = cellCount/2 -5
-            Snake2[0].y = cellCount/2 - 5
+            secondSnake[0].x = Snake[0].x - 5
+            secondSnake[0].y = Snake[0].y - 5
         else:
             Snake[0].x = (cellCount-1)/2
             Snake[0].y = (cellCount-1)/2
-            Snake2[0].x = (cellCount-1)/2 - 5
-            Snake2[0].y = (cellCount-1)/2 - 5
+            secondSnake[0].x = Snake[0].x - 5
+            secondSnake[0].y = Snake[0].y - 5
 
         self.drawSnakePart(Snake[0]) # Draws head
-        self.drawSnakePart(Snake2[0])
+        self.drawSnakePart(secondSnake[0])
 
         self.g.delete(FoodObjectList[0].id)
         
@@ -187,7 +186,7 @@ class App(threading.Thread):
     # On key press...
     def key(self, event):
         global snakeDirection
-        global snakeDirection2
+        global secondSnakeDirection
         global tps
         keyPressed = str(event.char)
 
@@ -204,16 +203,16 @@ class App(threading.Thread):
         elif keyPressed == 'd' and snakeDirection != 3:
             snakeDirection = 4
             time.sleep(1/tps)
-        elif keyPressed == "i" and snakeDirection2 != 2:
-            snakeDirection2 = 1
-        elif keyPressed == 'k' and snakeDirection2 != 1:
-            snakeDirection2 = 2
+        elif keyPressed == "i" and secondSnakeDirection != 2:
+            secondSnakeDirection = 1
+        elif keyPressed == 'k' and secondSnakeDirection != 1:
+            secondSnakeDirection = 2
             time.sleep(1/tps)
-        elif keyPressed == 'j' and snakeDirection2 != 4:
-            snakeDirection2 = 3
+        elif keyPressed == 'j' and secondSnakeDirection != 4:
+            secondSnakeDirection = 3
             time.sleep(1/tps)
-        elif keyPressed == 'l' and snakeDirection2 != 3:
-            snakeDirection2 = 4
+        elif keyPressed == 'l' and secondSnakeDirection != 3:
+            secondSnakeDirection = 4
             time.sleep(1/tps)
         else:
             return # Marginally improved efficiency 
@@ -222,13 +221,14 @@ class App(threading.Thread):
 
     # Main tick function, called each tick 
     def tick(self):
-        global snakeDirection
         global tps
         global Snake
-        global Snake2
-        global snakeDirection2
+        global secondSnake
+        global snakeDirection
+        global secondSnakeDirection
         global running
-        global score
+        global U1Score
+        global U2Score
 
         # Moves the snake head
         if snakeDirection == 1:
@@ -253,31 +253,31 @@ class App(threading.Thread):
             Snake[0].x = Snake[0].x + 1
 
         # Moves the snake head
-        if snakeDirection2 == 1:
-            self.g.move(Snake2[0].id, 0, -cellSize)
-            Snake2[0].oldx = Snake2[0].x
-            Snake2[0].oldy = Snake2[0].y
-            Snake2[0].y = Snake2[0].y - 1
-        elif snakeDirection2 == 2:
-            self.g.move(Snake2[0].id, 0, cellSize)
-            Snake2[0].oldx = Snake2[0].x
-            Snake2[0].oldy = Snake2[0].y
-            Snake2[0].y = Snake2[0].y + 1
-        elif snakeDirection2 == 3:
-            self.g.move(Snake2[0].id, -cellSize, 0)
-            Snake2[0].oldx = Snake2[0].x
-            Snake2[0].oldy = Snake2[0].y
-            Snake2[0].x = Snake2[0].x - 1
-        elif snakeDirection2 == 4:
-            self.g.move(Snake2[0].id, cellSize, 0)
-            Snake2[0].oldx = Snake2[0].x
-            Snake2[0].oldy = Snake2[0].y
-            Snake2[0].x = Snake2[0].x + 1
+        if secondSnakeDirection == 1:
+            self.g.move(secondSnake[0].id, 0, -cellSize)
+            secondSnake[0].oldx = secondSnake[0].x
+            secondSnake[0].oldy = secondSnake[0].y
+            secondSnake[0].y = secondSnake[0].y - 1
+        elif secondSnakeDirection == 2:
+            self.g.move(secondSnake[0].id, 0, cellSize)
+            secondSnake[0].oldx = secondSnake[0].x
+            secondSnake[0].oldy = secondSnake[0].y
+            secondSnake[0].y = secondSnake[0].y + 1
+        elif secondSnakeDirection == 3:
+            self.g.move(secondSnake[0].id, -cellSize, 0)
+            secondSnake[0].oldx = secondSnake[0].x
+            secondSnake[0].oldy = secondSnake[0].y
+            secondSnake[0].x = secondSnake[0].x - 1
+        elif secondSnakeDirection == 4:
+            self.g.move(secondSnake[0].id, cellSize, 0)
+            secondSnake[0].oldx = secondSnake[0].x
+            secondSnake[0].oldy = secondSnake[0].y
+            secondSnake[0].x = secondSnake[0].x + 1
 
         if len(Snake) > 0: # Fixes an error where the first iteration does not have any objects. No idea why it is happening as the same oject is beig modified earlier, but it works so im not going to try to fix it
             #print(Snake[0].x, ",", Snake[0].y) # For debugging 
 
-            if Snake[0].x == 0 or Snake[0].x == cellCount+1 or Snake[0].y == 0 or Snake[0].y == cellCount+1 or Snake2[0].x == 0 or Snake2[0].y == 0 or Snake2[0].x == cellCount+1 or Snake2[0].y == cellCount+1: # When a wall is hit...
+            if Snake[0].x == 0 or Snake[0].x == cellCount+1 or Snake[0].y == 0 or Snake[0].y == cellCount+1 or secondSnake[0].x == 0 or secondSnake[0].y == 0 or secondSnake[0].x == cellCount+1 or secondSnake[0].y == cellCount+1: # When a wall is hit...
                 running = False
                 return
 
@@ -305,7 +305,8 @@ class App(threading.Thread):
                 deltaX = Snake[len(Snake)-i].x - Snake[len(Snake)-i].oldx
                 deltaY = Snake[len(Snake)-i].y - Snake[len(Snake)-i].oldy
                 self.g.move(Snake[len(Snake)-i].id, deltaX*cellSize, deltaY*cellSize)
-                #print("Updated") # Also here for debugging
+            
+            
             
             if Snake[0].x == FoodObjectList[0].x and Snake[0].y == FoodObjectList[0].y: # When food is hit...
                 # Creates a new part and sets it to the previous position of the last part
@@ -319,10 +320,53 @@ class App(threading.Thread):
                 self.spawnNewFood()
 
                 # Increaces score
-                #self.scoreLabel.config(text="Score: " + str(score))
+                U1Score += 1
+                self.scoreLabel.config(text="Score: " + str(U1Score) +" vs " + str(U2Score) + "          Total: " + str(U1Score+U2Score))
+           
 
+        if len(secondSnake) > 0:
+            for i in range(1, len(secondSnake)):
+                if i == len(secondSnake) - 1:
+                    secondSnake[len(secondSnake)-i].oldx = secondSnake[len(secondSnake)-i].x
+                    secondSnake[len(secondSnake)-i].oldy = secondSnake[len(secondSnake)-i].y
+                    secondSnake[len(secondSnake)-i].x = secondSnake[(len(secondSnake)-i)-1].oldx
+                    secondSnake[len(secondSnake)-i].y = secondSnake[(len(secondSnake)-i)-1].oldy
+                else:
+                    secondSnake[len(secondSnake)-i].oldx = secondSnake[len(secondSnake)-i].x
+                    secondSnake[len(secondSnake)-i].oldy = secondSnake[len(secondSnake)-i].y
+                    secondSnake[len(secondSnake)-i].x = secondSnake[(len(secondSnake)-i)-1].x
+                    secondSnake[len(secondSnake)-i].y = secondSnake[(len(secondSnake)-i)-1].y
 
-            
+                deltaX = secondSnake[len(secondSnake)-i].x - secondSnake[len(secondSnake)-i].oldx
+                deltaY = secondSnake[len(secondSnake)-i].y - secondSnake[len(secondSnake)-i].oldy
+                self.g.move(secondSnake[len(secondSnake)-i].id, deltaX*cellSize, deltaY*cellSize)
+
+            if secondSnake[0].x == FoodObjectList[0].x and secondSnake[0].y == FoodObjectList[0].y:
+                newSnakePart = snakePart()
+                newSnakePart.x = secondSnake[(len(secondSnake)-1)].oldx
+                newSnakePart.y = secondSnake[(len(secondSnake)-1)].oldy
+                self.drawSnakePart(newSnakePart)
+                secondSnake.append(newSnakePart)
+
+                self.spawnNewFood()
+
+                U2Score += 1
+                self.scoreLabel.config(text="Score: " + str(U1Score) +" vs " + str(U2Score) + "          Total: " + str(U1Score+U2Score))
+
+                for i in range(1, len(secondSnake)-1):
+                    if secondSnake[0].x == secondSnake[i].x and secondSnake[0].y == secondSnake[i].y:
+                        running = False
+                        return
+
+        for i in range(len(secondSnake)):
+            if Snake[0].x == secondSnake[i].x and Snake[0].y == secondSnake[i].y:
+                running = False
+                return
+
+        for i in range(len(Snake)):
+            if secondSnake[0].x == Snake[i].x and secondSnake[0].y == Snake[i].y:
+                running = False
+                return
 
         time.sleep(1/tps) # Sleeps for 1 tick
           
@@ -350,7 +394,8 @@ class food():
 # Main tick loop 
 def runGame():
     global running
-    global score
+    global U1Score
+    global U2Score
     global highScore
     running = True
 
@@ -358,7 +403,7 @@ def runGame():
     while running == True:
         app.tick()
     
-    scoreMessage = "You have lost. Score: "
+    scoreMessage = "You have lost. Score: " + str(U1Score) + " vs " + str(U2Score) + "     Total: " + str(U1Score + U2Score)
 
     messagebox.showinfo("Game Over", scoreMessage)
 
