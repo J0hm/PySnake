@@ -95,34 +95,52 @@ class App(threading.Thread):
     def reset(self):
         global Snake
         global snakeDirection
-        global score
+        global snakeDirection2
+        global Snake2
+        global U1Score
+        global U2Score
         global FoodObjectList
 
         for i in Snake:
             self.g.delete(i.id)
-            
+
+        for i in Snake2:
+            self.g.delete(i.id)
+
+        Snake2.clear()
         Snake.clear()
 
         snakeDirection = int
+        snakeDirection2 = int
        
-        score = 0
-        self.scoreLabel.config(text="Score: " + str(score))
+        U1Score = 0
+        U2Score = 0
+        self.scoreLabel.config(text="Score: " + str(U1Score) + " vs. " + str(U2Score))
         
         snakeHead = snakePart() # Creates head object
         Snake.append(snakeHead) # Adds head object to list of snake parts
 
+        snakeHead2 = snakePart()
+        Snake2.append(snakeHead)
+
         # Sets snake head properties 
         Snake[0].fillColor = "black"
+        Snake2[0].fillColor = "black"
 
         # Draws off center if there is no exact center
         if (cellCount % 2) == 0:
             Snake[0].x = cellCount/2
             Snake[0].y = cellCount/2
+            Snake2[0].x = cellCount/2 -5
+            Snake2[0].y = cellCount/2 - 5
         else:
             Snake[0].x = (cellCount-1)/2
             Snake[0].y = (cellCount-1)/2
+            Snake2[0].x = (cellCount-1)/2 - 5
+            Snake2[0].y = (cellCount-1)/2 - 5
 
         self.drawSnakePart(Snake[0]) # Draws head
+        self.drawSnakePart(Snake2[0])
 
         self.g.delete(FoodObjectList[0].id)
         
@@ -207,6 +225,8 @@ class App(threading.Thread):
         global snakeDirection
         global tps
         global Snake
+        global Snake2
+        global snakeDirection2
         global running
         global score
 
@@ -271,7 +291,7 @@ class App(threading.Thread):
             # Set new coords to Snake[n-1] coords (shift by one)
             # Move snake by tuple(old coords) - tuple(new coords)
             for i in range(1, len(Snake)): # Iterate through indicies
-                if i == len(Snake) - 1: # This if prevents the second segment (Snake[1]) from drawing over the head. 
+                if i == len(Snake) - 1: # This if prevents the second sejailgment (Snake[1]) from drawing over the head. 
                     Snake[len(Snake)-i].oldx = Snake[len(Snake)-i].x
                     Snake[len(Snake)-i].oldy = Snake[len(Snake)-i].y
                     Snake[len(Snake)-i].x = Snake[(len(Snake)-i)-1].oldx
@@ -286,7 +306,6 @@ class App(threading.Thread):
                 deltaY = Snake[len(Snake)-i].y - Snake[len(Snake)-i].oldy
                 self.g.move(Snake[len(Snake)-i].id, deltaX*cellSize, deltaY*cellSize)
                 #print("Updated") # Also here for debugging
-
             
             if Snake[0].x == FoodObjectList[0].x and Snake[0].y == FoodObjectList[0].y: # When food is hit...
                 # Creates a new part and sets it to the previous position of the last part
