@@ -4,6 +4,9 @@ import time
 import threading
 from tkinter import messagebox
 
+# This is not the main file or program, this is a second one that adds a second snake. I spend 15 minutes on this to make Jacob happy
+# This is absolutely not the best way to handle this but it was the fastest just for a little fun
+
 # Constants
 canvasSize = 900
 cellSize = 30
