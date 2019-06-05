@@ -5,8 +5,8 @@ import threading
 from tkinter import messagebox
 
 # Constants
-canvasSize = 900
-cellSize = 30
+canvasSize = 800
+cellSize = 20
 cellCount = canvasSize/cellSize
 Snake = [] 
 FoodObjectList = [] # Only using one food object so this isnt necessary, but it allows for more if you want
@@ -56,7 +56,8 @@ class App(threading.Thread):
         self.scoreLabel.place(x=0, y=canvasSize+10)
         self.highScoreLabel = Label(self.root, text="High Score: " + str(highScore), font=("Helvetica", 16), fg="white", bg="black")
         self.highScoreLabel.place(x=100, y=canvasSize+10)
-
+        self.startLabel = Label(self.root, text="Use WASD to control the snake", font=("Helvectica", 16), fg="white", bg="black")
+        self.startLabel.place(x=340, y=canvasSize+10)
         snakeHead = snakePart() # Creates head object
         Snake.append(snakeHead) # Adds head object to list of snake parts
 
